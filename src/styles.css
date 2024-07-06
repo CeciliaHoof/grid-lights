@@ -1,3 +1,18 @@
 body {
     font-family: sans-serif;
 }
+
+.container {
+    height: 450px;
+    width: 450px;
+    display: grid;
+    padding: 15px;
+    gap: 15px;
+    grid-template-columns: auto auto auto;
+    border: 3px dotted saddlebrown;
+    margin: auto
+}
+
+.cell {
+    border: 2px solid peru
+}
