@@ -1,17 +1,37 @@
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 
 import "./styles.css";
 
 export default function App() {
   const [activated, setActivated] = useState([]);
+  const [deactivation, setDeactivation] = useState(false)
 
   function handleClick(e) {
-    if (activated.length < 8) {
-      const id = e.target.id;
-      if (!activated.includes(id)) {
-        setActivated([...activated, id]);
+    const id = e.target.id;
+    if (!activated.includes(id)) {
+      const newActive = [...activated, id];
+      setActivated(newActive);
+      if (newActive.length === 8) {
+        deactivate();
       }
     }
+  }
+
+  function deactivate() {
+    setDeactivation(true)
+    const timer = setInterval(() => {
+      setActivated((active) => {
+        const newActive = [...active]
+        newActive.pop()
+
+        if (newActive.length === 0) {
+          clearInterval(timer)
+          setDeactivation(false)
+        }
+
+        return newActive
+      })
+    }, 300)
   }
 
   const cellsDisplay = [];
@@ -23,6 +43,7 @@ export default function App() {
           id={i}
           handleClick={handleClick}
           activated={activated.includes(i.toString())}
+          deactivation = {deactivation}
         />
       );
     } else {
@@ -33,13 +54,14 @@ export default function App() {
   return <div className="container">{cellsDisplay}</div>;
 }
 
-function Cell({ id, handleClick, activated }) {
+function Cell({ id, handleClick, activated, deactivation }) {
   return (
-    <div
+    <button
       className="cell"
       id={id}
       onClick={(e) => handleClick(e)}
-      style={{ backgroundColor: activated ? "darkseagreen" : null }}
+      disabled={activated || deactivation}
+      style={{ backgroundColor: activated ? "darkseagreen" : "white" }}
     />
   );
 }
